@@ -23,8 +23,6 @@ mail = imaplib.IMAP4_SSL("imap.gmail.com")
 
 try:
     print "Connecting to Gmail....\nLog in....."
-    # for testing
-    mail.login("rishi.darkknight.chauhan", "hwgrglpigpdlixxr")
     # for general purpose
     # mail.login(username, getpass.getpass())
     print "\nConnected."
