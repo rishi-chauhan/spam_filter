@@ -5,9 +5,10 @@
 # html to text
 
 from pymongo import MongoClient
-import get_email_details
 import imaplib
 import email
+import functions
+import getpass
 
 # creating a client
 client = MongoClient()
@@ -21,10 +22,13 @@ collection = db.spam
 # making a imap variable to access client's(here Gmail) all services
 mail = imaplib.IMAP4_SSL("imap.gmail.com")
 
+username = raw_input("Email ID: ")
+password = getpass.getpass()
+
 try:
     print "Connecting to Gmail....\nLog in....."
     # for general purpose
-    # mail.login(username, getpass.getpass())
+    mail.login(username, password)
     print "\nConnected."
 except imaplib.IMAP4.error:
     # login Failed
@@ -42,8 +46,6 @@ if rv == 'OK':
 
         for w in msg:
             cursor = db.spam.find({})
-            # if
-            #     print "yes"
 
         if rv != 'OK':
             print "ERROR getting message", num

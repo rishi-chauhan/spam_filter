@@ -4,17 +4,16 @@
 
 from sklearn import tree
 from pymongo import MongoClient
-import get_email_details
+from functions import emails
 
-get_email_details.login()
+emails.login()
 
 client = MongoClient()
 
 # connecting to database
 db = client.train
 
-ip, sender = get_email_details.get_details("INBOX")
-
+ip, sender = emails.get_details("INBOX")
 
 email_ip = ip
 email_username = sender[0]
@@ -49,12 +48,9 @@ clf = tree.DecisionTreeClassifier()
 clf = clf.fit(features, labels)
 test = [[ip_check, username, email, words]]
 
-
 if clf.predict(test)[0] == 1:
     print "\nSpam"
 else:
     print "\nNot Spam"
 
-
-
-get_email_details.logout()
+emails.logout()
