@@ -4,16 +4,22 @@
 
 from sklearn import tree
 from pymongo import MongoClient
-from functions import emails
+import imaplib
+import functions
+import getpass
 
-emails.login()
+mail = imaplib.IMAP4_SSL("imap.gmail.com")
+username = raw_input("Email ID: ")
+password = getpass.getpass()
+
+functions.logIn(mail, username, password)
 
 client = MongoClient()
 
 # connecting to database
 db = client.train
 
-ip, sender = emails.get_details("INBOX")
+ip, sender = functions.get_details(mail, "INBOX")
 
 email_ip = ip
 email_username = sender[0]
@@ -53,4 +59,4 @@ if clf.predict(test)[0] == 1:
 else:
     print "\nNot Spam"
 
-emails.logout()
+functions.logOut(mail)

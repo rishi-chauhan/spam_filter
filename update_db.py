@@ -2,22 +2,16 @@
 #This script helps in updating the database by going through all the spam mails in the account.#
 ################################################################################################
 
-# html to text
-
 from pymongo import MongoClient
 import imaplib
 import email
 import functions
 import getpass
 
-# creating a client
-client = MongoClient()
-
-# connecting to db
-db = client.project
-
-# connecting to collection
-collection = db.spam
+# set up MongoDB
+mongo_client = MongoClient()
+mongo_db = mongo_client.project
+mongo_collection = mongo_db.spam
 
 # making a imap variable to access client's(here Gmail) all services
 mail = imaplib.IMAP4_SSL("imap.gmail.com")
@@ -25,15 +19,7 @@ mail = imaplib.IMAP4_SSL("imap.gmail.com")
 username = raw_input("Email ID: ")
 password = getpass.getpass()
 
-try:
-    print "Connecting to Gmail....\nLog in....."
-    # for general purpose
-    mail.login(username, password)
-    print "\nConnected."
-except imaplib.IMAP4.error:
-    # login Failed
-    print "Login Failed!!"
-    print "\n1. If you have a 2-way verification for your Gmail account go to \"  https://security.google.com/settings/security/apppasswords\" and create an app password. \n2. Go to  \"https://www.google.com/settings/security/lesssecureapps\" and enable less secure apps permission"
+functions.logIn(mail, username, password)
 
 rv, data = mail.select("[Gmail]/Spam")
 
@@ -45,13 +31,11 @@ if rv == 'OK':
         msg = str(email.message_from_string(data[0][1]))
 
         for w in msg:
-            cursor = db.spam.find({})
+            cursor = mongo_db.spam.find({})
 
         if rv != 'OK':
             print "ERROR getting message", num
 
 mail.close()
 
-print "\nLoging out..."
-mail.logout()
-print "Log out successful.\nHave a good day! :)"
+functions.logOut(mail)

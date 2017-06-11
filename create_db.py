@@ -4,16 +4,14 @@
 ###################################################################################
 import functions
 
-fbase = functions.firebase()
-firebase_connect = fbase.firebase_config
-firebase_db = firebase_connect.database()
+firebase_db = functions.setUpFirebase()
 
 # creating a list
 def create_list(file_name, list_name):
     f = open(file_name, "r")
     a = f.readlines()
     for i in a:
-        list_name.append(fbase.formatDataForFirebase(i))
+        list_name.append(functions.formatDataForFirebase(i))
 
 # creating a dictionary of spam words
 def words_insert_data(arg):
@@ -21,7 +19,7 @@ def words_insert_data(arg):
     a = f.readline()
     b = a.split(",")
     for i in b:
-        arg[fbase.formatDataForFirebase(i)] = 0
+        arg[functions.formatDataForFirebase(i)] = 0
 
 # inserting data into the database
 def insert_in_db(col, ip_list, email_list, words_list, usernames_list):
