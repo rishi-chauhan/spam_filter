@@ -8,4 +8,4 @@
   main.py contains the main code which connects to the email server of user and gets the latest email. This then analyses the email and marks it as spam or not.
   update_db.py connects to the spam folder of the user's email account and updates Firebase Realtime Database for spam IPs, usernames and spam words.
 
-# Project is under development
+Project is on hold
