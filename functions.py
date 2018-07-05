@@ -12,12 +12,7 @@ mail = imaplib.IMAP4_SSL("imap.gmail.com")
 def setUpFirebase():
     # config firebase for app
     config = {
-        "apiKey": "AIzaSyD6oXg-aMBIZ_rK6aSW9uZZcI4ITk_zZJM",
-        "authDomain": "spam-filter-e2306.firebaseapp.com",
-        "databaseURL": "https://spam-filter-e2306.firebaseio.com",
-        "projectId": "spam-filter-e2306",
-        "storageBucket": "spam-filter-e2306.appspot.com",
-        "messagingSenderId": "438892013228"
+        # put your config details
         }
     firebase = pyrebase.initialize_app(config)
     db = firebase.database()
