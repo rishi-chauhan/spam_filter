@@ -1,15 +1,15 @@
-import pyrebase                         # for firebase functions
-from pymongo import MongoClient         # for MongoDB functions
+"""Util functions for the project"""
 import imaplib                          # for imap functions
-import getpass                          # for getpass function
 import email                            # for email functions
+import pyrebase                         # for firebase functions
 
 # making a imap variable to access client's(here Gmail) all services
-mail = imaplib.IMAP4_SSL("imap.gmail.com")
+MAIL = imaplib.IMAP4_SSL("imap.gmail.com")
 
 # self required firebase functions
-# function for firebase connection
-def setUpFirebase():
+
+def set_up_firebase():
+    """set up firebase connection"""
     # config firebase for app
     config = {
         # put your config details
@@ -18,8 +18,8 @@ def setUpFirebase():
     db = firebase.database()
     return db
 
-# function to format data for firebase realtime database
-def formatDataForFirebase(arg):
+def format_data_for_firebase(arg):
+    """formats data for firebase realtime database"""
     arg.strip("\n")
     arg = arg.replace(".", "dot+")
     arg = arg.replace("/", "slash+")
@@ -29,21 +29,21 @@ def formatDataForFirebase(arg):
     arg = arg.replace("]", "sobrackets+")
     return arg
 
-# self required email functions
-# login
-def logIn(arg, username, password):
+def login(arg, username, password):
+    """self required email functions
+    login"""
     try:
-        print "Connecting to Gmail....\nLogging in....."
+        print("Connecting to Gmail....\nLogging in.....")
         # for general purpose
         arg.login(username, password)
-        print "\nConnected."
+        print("\nConnected.")
     except imaplib.IMAP4.error:
         # login Failed
-        print "Login Failed!!"
-        print "\n1. If you have a 2-way verification for your Gmail account go to \"  https://security.google.com/settings/security/apppasswords\" and create an app password.Then put that password in the password field while logging in. \n2. Go to  \"https://www.google.com/settings/security/lesssecureapps\" and enable less secure apps permission"
+        print("Login Failed!!")
+        print("\n1. If you have a 2-way verification for your Gmail account go to \"https://security.google.com/settings/security/apppasswords\" and create an app password.Then put that password in the password field while logging in. \n2. Go to  \"https://www.google.com/settings/security/lesssecureapps\" and enable less secure apps permission")
 
-# get mailbox details
 def get_details(arg, mailbox):
+    """get mailbox details"""
     # getting the mail list
     # rv, mailboxes = arg.list()
     # print mailboxes
@@ -54,7 +54,7 @@ def get_details(arg, mailbox):
         for num in data[0].split():
             rv, data = arg.fetch(num, '(RFC822)')
             if rv != 'OK':
-                print "ERROR getting message", num
+                print("ERROR getting message", num)
 
         # print data
         msg = email.message_from_string(data[0][1])
@@ -67,10 +67,10 @@ def get_details(arg, mailbox):
         sender = sender.split(" <")
         sender[1] = sender[1].strip(">")
         arg.close()
-        return ip,sender
+        return ip, sender
 
-# logout
-def logOut(arg):
-    print "\nLoging out..."
+def logout(arg):
+    """LogOut"""
+    print("\nLoging out...")
     arg.logout()
-    print "Log out successful.\nHave a good day! :)"
+    print("Log out successful.\nHave a good day! :)")

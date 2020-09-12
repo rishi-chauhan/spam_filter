@@ -1,32 +1,34 @@
-import functions                        # from functions.py
+"""send data from mongo to firebase"""
 from pymongo import MongoClient
+import functions                        # from functions.py
 
 # set up MongoDB
-mongo_client = MongoClient()
-mongo_db = mongo_client.project
-mongo_collection = mongo_db.spam
+MONGO_CLIENT = MongoClient()
+MONGO_DB = MONGO_CLIENT.project
+MONGO_COLLECTION = MONGO_DB.spam
 
-firebase_db = functions.setUpFirebase()       # connect to firebase realtime database
+FIREBASE_DB = functions.set_up_firebase()       # connect to firebase realtime database
 
-# initialise empty dictionaries to get data from local MongoDB Database and then store the respective data in the dictionaries as the data that is to be stored is in key-value pairs
-ip = {}                 # to store IPs
-username = {}           # to store usernames
-email = {}              # to store email addresses
-words = {}              # to store common spam words
+# initialise empty dictionaries to get data from local MongoDB Database and then store the
+# respective data in the dictionaries as the data that is to be stored is in key-value pairs
+IP = {}                 # to store IPs
+USERNAME = {}           # to store usernames
+EMAIL = {}              # to store email addresses
+WORDS = {}              # to store common spam words
 
 # get data from local MongoDB and store that in respective dictionaries
-for i in mongo_collection.find():
+for i in MONGO_COLLECTION.find():
     for j in i["ip"]:
         # replace . with + because it is not allowed in firebase
-        ip[functions.formatDataForFirebase(j)] = 0
+        IP[functions.format_data_for_firebase(j)] = 0
     for k in i["email"]:
         # replace . with + because it is not allowed in firebase
-        email[functions.formatDataForFirebase(str(k))] = 0
+        EMAIL[functions.format_data_for_firebase(str(k))] = 0
     for l in i["username"]:
-        username[functions.formatDataForFirebase(l)] = 0
+        USERNAME[functions.format_data_for_firebase(l)] = 0
 
 # a dictionary that'll store data that is to be input the firebase
-data = {"ip": ip, "email": email, "username": username}
+DATA = {"ip": IP, "email": EMAIL, "username": USERNAME}
 
 # sending data to firebase
 # firebase_db.set(data)

@@ -1,47 +1,46 @@
-###################################################################################
-# This script helps in connecting to the firebase realtime database and inserting #
-# data in the same from the text files.                                           #
-###################################################################################
+"""
+This script helps in connecting to the firebase realtime database and inserting
+data in the same from the text files
+"""
 import functions
 
-firebase_db = functions.setUpFirebase()
+FIREBASE_DB = functions.set_up_firebase()
+# dictionary to store all ips, emails and usernames in each, the key will be ip,
+# email and usernames and values of these will be the number of times
+# they appear in testing emails
+IP = []
+EMAILS = []
+USERNAMES = []
+WORDS = {}
 
-# creating a list
 def create_list(file_name, list_name):
+    """creates a list"""
     f = open(file_name, "r")
     a = f.readlines()
     for i in a:
-        list_name.append(functions.formatDataForFirebase(i))
+        list_name.append(functions.format_data_for_firebase(i))
 
-# creating a dictionary of spam words
 def words_insert_data(arg):
+    """creates a dictionary of spam words"""
     f = open("foofinal.txt", "r")
     a = f.readline()
     b = a.split(",")
     for i in b:
-        arg[functions.formatDataForFirebase(i)] = 0
+        arg[functions.format_data_for_firebase(i)] = 0
 
-# inserting data into the database
-def insert_in_db(col, ip_list, email_list, words_list, usernames_list):
+def insert_in_db(ip_list, email_list, words_list, usernames_list):
+    """inserts data into the database"""
     result = {
-    "ip": ip_list,
-    "email": email_list,
-    "username": usernames_list,
-    "words": words_list
+        "ip": ip_list,
+        "email": email_list,
+        "username": usernames_list,
+        "words": words_list
     }
-    firebase_db.set(result)
+    FIREBASE_DB.set(result)
 
-# dictionary to store all ips, emails and usernames in each, the key will be ip,
-# email and usernames and values of these will be the number of times
-# they appear in testing emails
-ip = []
-emails = []
-usernames = []
-words = {}
+create_list("files/blocked_ip.txt", IP)
+create_list("files/blocked_email.txt", EMAILS)
+create_list("files/blocked_username.txt", USERNAMES)
+words_insert_data(WORDS)
 
-create_list("files/blocked_ip.txt", ip)
-create_list("files/blocked_email.txt", emails)
-create_list("files/blocked_username.txt", usernames)
-words_insert_data(words)
-
-insert_in_db(collection, ip, emails, words, usernames)
+insert_in_db(IP, EMAILS, WORDS, USERNAMES)

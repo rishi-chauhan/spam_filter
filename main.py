@@ -1,62 +1,62 @@
-####################################################################
-#This script is the main script that executes and shows the result.#
-####################################################################
-
+"""
+This script is the main script that executes and shows the result.
+"""
+import imaplib
+import getpass
 from sklearn import tree
 from pymongo import MongoClient
-import imaplib
 import functions
-import getpass
 
-mail = imaplib.IMAP4_SSL("imap.gmail.com")
-username = raw_input("Email ID: ")
-password = getpass.getpass()
+MAIL = imaplib.IMAP4_SSL("imap.gmail.com")
+USERNAME = input("Email ID: ")
+PASSWORD = getpass.getpass()
 
-functions.logIn(mail, username, password)
+functions.login(MAIL, USERNAME, PASSWORD)
 
-client = MongoClient()
+CLIENT = MongoClient()
 
 # connecting to database
-db = client.train
+DB = CLIENT.train
 
-ip, sender = functions.get_details(mail, "INBOX")
+IP, SENDER = functions.get_details(MAIL, "INBOX")
 
-email_ip = ip
-email_username = sender[0]
-email_email = sender[1]
+EMAIL_IP = IP
+EMAIL_USERNAME = SENDER[0]
+EMAIL_EMAIL = SENDER[1]
 
-ip_check = 0
-email = 0
-username = 0
-words = 0
+IP_CHECK = 0
+EMAIL = 0
+USERNAME = 0
+WORDS = 0
 
 # selecting collection
-collection = db.train_c
+COLLECTION = DB.train_c
 
-result = db.train_c.find({"$or": [{"ip": email_ip}, {"username": email_username}, {"email": email_email}]})
-for i in result:
-    if email_ip in i["ip"]:
-        ip_check = 1
-    if email_username in i["username"]:
-        username = 1
-    if email_email in i["email"]:
-        email = 1
+RESULT = DB.train_c.find({"$or": [{"ip": EMAIL_IP}, {"username": EMAIL_USERNAME},
+                                  {"email": EMAIL_EMAIL}]})
+for i in RESULT:
+    if EMAIL_IP in i["ip"]:
+        IP_CHECK = 1
+    if EMAIL_USERNAME in i["username"]:
+        USERNAME = 1
+    if EMAIL_EMAIL in i["email"]:
+        EMAIL = 1
 
 # [ip, username, email, words]
-features = [[0,0,0,0], [0,1,1,1], [1,1,1,0], [1,0,0,0], [0,0,0,1], [1,1,1,1]]
+FEATURES = [[0, 0, 0, 0], [0, 1, 1, 1], [1, 1, 1, 0], [1, 0, 0, 0], [0, 0, 0, 1], [1, 1, 1, 1]]
 # spam = 1, not spam = 0
-labels = [0,1,1,1,1,1]
+LABELS = [0, 1, 1, 1, 1, 1]
 
-print "\nIP: ", email_ip, "\nUsername: ", email_username, "\nE-mail ID: ", email_email
+print("\nIP: ", EMAIL_IP, "\nUsername: ", EMAIL_USERNAME, "\nE-mail ID: ", EMAIL_EMAIL)
 # print ip_check, username, email
 
-clf = tree.DecisionTreeClassifier()
-clf = clf.fit(features, labels)
-test = [[ip_check, username, email, words]]
+CLF = tree.DecisionTreeClassifier()
+CLF = CLF.fit(FEATURES, LABELS)
+TEST = [[IP_CHECK, USERNAME, EMAIL, WORDS]]
 
-if clf.predict(test)[0] == 1:
-    print "\nSpam"
+if CLF.predict(TEST)[0] == 1:
+    print("\nSpam")
 else:
-    print "\nNot Spam"
+    print("\nNot Spam")
 
-functions.logOut(mail)
+functions.logout(MAIL)
